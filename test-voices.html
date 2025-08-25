@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voice Testing - Mark Natural Conversation</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      .voice-item {
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      .mark-voice {
+        background-color: #e8f5e8;
+        border-color: #4caf50;
+      }
+      .selected-voice {
+        background-color: #fff3cd;
+        border-color: #ffc107;
+        font-weight: bold;
+      }
+      button {
+        padding: 10px 20px;
+        margin: 5px;
+        background: #d4a299;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #b8927a;
+      }
+      .test-text {
+        width: 100%;
+        height: 100px;
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🎧 Voice Testing - Mark Natural Conversation Priority</h1>
+
+    <div>
+      <h2>Test Text:</h2>
+      <textarea class="test-text" id="testText">
+Hello, this is a test of the Mark Natural Conversation voice. I am reading a news article about technology and innovation. The voice should sound natural and conversational, perfect for reading news content.
+        </textarea
+      >
+
+      <button onclick="testSelectedVoice()">🎤 Test Selected Voice</button>
+      <button onclick="stopSpeech()">⏹️ Stop</button>
+      <button onclick="loadVoices()">🔄 Refresh Voices</button>
+    </div>
+
+    <div
+      id="selectedVoice"
+      style="
+        margin: 20px 0;
+        padding: 15px;
+        background: #f0f0f0;
+        border-radius: 5px;
+      "
+    >
+      <strong>Selected Voice:</strong> <span id="voiceName">Loading...</span>
+    </div>
+
+    <h2>Available Voices (Mark voices highlighted):</h2>
+    <div id="voicesList">Loading voices...</div>
+
+    <script>
+      let selectedVoice = null;
+      let currentUtterance = null;
+
+      // Voice selection logic (same as in your app)
+      function findBestMaleVoice(voices) {
+        const maleVoicePreferences = [
+          // Mark voices (as specifically requested by user)
+          "Mark - Natural Conversation",
+          "Microsoft Mark - English (United States)",
+          "Mark",
+          "Mark (Enhanced)",
+          "Mark (Natural)",
+          // Other high-quality male voices
+          "Google UK English Male",
+          "Google US English Male",
+          "Microsoft David - English (United States)",
+          "Microsoft James - English (Australia)",
+          "Microsoft Ryan - English (United Kingdom)",
+          // Apple voices (macOS/iOS)
+          "Alex",
+          "Daniel",
+          "Tom",
+        ];
+
+        for (const preference of maleVoicePreferences) {
+          const voice = voices.find((v) => v.name === preference);
+          if (voice && voice.lang.startsWith("en")) {
+            console.log("Selected voice:", voice.name, voice.lang);
+            return voice;
+          }
+        }
+
+        // Fallback patterns
+        const patterns = [
+          /mark.*natural.*conversation/i,
+          /mark.*natural/i,
+          /mark.*conversation/i,
+          /mark/i,
+          /male/i,
+          /man/i,
+          /david/i,
+          /james/i,
+          /alex/i,
+          /daniel/i,
+          /tom/i,
+          /ryan/i,
+        ];
+
+        for (const pattern of patterns) {
+          const voice = voices.find(
+            (v) => pattern.test(v.name) && v.lang.startsWith("en")
+          );
+          if (voice) {
+            console.log("Selected voice (pattern):", voice.name, voice.lang);
+            return voice;
+          }
+        }
+
+        return voices.find((v) => v.lang.startsWith("en")) || voices[0];
+      }
+
+      function loadVoices() {
+        const voices = speechSynthesis.getVoices();
+        selectedVoice = findBestMaleVoice(voices);
+
+        document.getElementById("voiceName").textContent = selectedVoice
+          ? `${selectedVoice.name} (${selectedVoice.lang})`
+          : "No voice selected";
+
+        const voicesList = document.getElementById("voicesList");
+        voicesList.innerHTML = "";
+
+        if (voices.length === 0) {
+          voicesList.innerHTML =
+            "<p>No voices available. Try refreshing or check browser compatibility.</p>";
+          return;
+        }
+
+        voices.forEach((voice) => {
+          const div = document.createElement("div");
+          div.className = "voice-item";
+
+          // Highlight Mark voices
+          if (voice.name.toLowerCase().includes("mark")) {
+            div.classList.add("mark-voice");
+          }
+
+          // Highlight selected voice
+          if (selectedVoice && voice.name === selectedVoice.name) {
+            div.classList.add("selected-voice");
+          }
+
+          div.innerHTML = `
+                    <strong>${voice.name}</strong><br>
+                    Language: ${voice.lang}<br>
+                    Local: ${voice.localService ? "Yes" : "No"}<br>
+                    Default: ${voice.default ? "Yes" : "No"}
+                    <button onclick="testVoice('${voice.name}', '${voice.lang}')" style="float: right;">Test This Voice</button>
+                `;
+
+          voicesList.appendChild(div);
+        });
+      }
+
+      function testSelectedVoice() {
+        if (!selectedVoice) {
+          alert("No voice selected");
+          return;
+        }
+
+        const text = document.getElementById("testText").value;
+        testVoice(selectedVoice.name, selectedVoice.lang, text);
+      }
+
+      function testVoice(voiceName, voiceLang, customText = null) {
+        stopSpeech();
+
+        const text = customText || document.getElementById("testText").value;
+        const utterance = new SpeechSynthesisUtterance(text);
+
+        const voices = speechSynthesis.getVoices();
+        const voice = voices.find(
+          (v) => v.name === voiceName && v.lang === voiceLang
+        );
+
+        if (voice) {
+          utterance.voice = voice;
+          utterance.rate = 0.85;
+          utterance.pitch = 0.9;
+          utterance.volume = 1;
+
+          console.log("Testing voice:", voice.name);
+          currentUtterance = utterance;
+          speechSynthesis.speak(utterance);
+        } else {
+          alert("Voice not found: " + voiceName);
+        }
+      }
+
+      function stopSpeech() {
+        speechSynthesis.cancel();
+        currentUtterance = null;
+      }
+
+      // Load voices when page loads
+      if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = loadVoices;
+      }
+
+      // Also try loading immediately
+      setTimeout(loadVoices, 100);
+      setTimeout(loadVoices, 1000); // Backup in case voices load slowly
+    </script>
+  </body>
+</html>
