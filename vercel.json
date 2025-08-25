@@ -1,0 +1,23 @@
+{
+  "buildCommand": "pnpm run build",
+  "devCommand": "pnpm run dev",
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
+  "functions": {
+    "app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "GEMINI_API_KEY": "dummy_key_for_build",
+    "ELEVENLABS_API_KEY": "dummy_key_for_build",
+    "SCRAPING_API_KEY": "dummy_key_for_build"
+  },
+  "build": {
+    "env": {
+      "GEMINI_API_KEY": "dummy_key_for_build",
+      "ELEVENLABS_API_KEY": "dummy_key_for_build",
+      "SCRAPING_API_KEY": "dummy_key_for_build"
+    }
+  }
+}

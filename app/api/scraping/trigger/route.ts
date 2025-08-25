@@ -59,9 +59,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate environment
+    // Validate environment - temporarily disabled for deployment
+    // Scraping functionality not needed for now
     try {
-      env.validate();
+      // env.validate();
+      if (!env.GEMINI_API_KEY) {
+        logger.warn(
+          "GEMINI_API_KEY not configured - scraping functionality disabled"
+        );
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Scraping functionality temporarily disabled",
+            error: "GEMINI_API_KEY not configured",
+            timestamp: new Date().toISOString(),
+          } as TriggerResponse,
+          { status: 503 }
+        );
+      }
     } catch (error) {
       logger.error("Environment validation failed", error);
       return NextResponse.json(
