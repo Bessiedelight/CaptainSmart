@@ -25,6 +25,8 @@ export default function NYTLikeHome() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [contentReady, setContentReady] = useState(false);
+  const [stylesLoaded, setStylesLoaded] = useState(false);
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -57,12 +59,17 @@ export default function NYTLikeHome() {
         setError(true);
       } finally {
         setLoading(false);
+        // Add a small delay to ensure content is ready before showing
+        setTimeout(() => {
+          setStylesLoaded(true);
+          setTimeout(() => setContentReady(true), 50);
+        }, 100);
       }
     };
     fetchArticles();
   }, []);
 
-  if (loading) {
+  if (loading || !contentReady || !stylesLoaded) {
     const { SmartNewsPageSkeleton } = require("@/components/SkeletonLoaders");
     return <SmartNewsPageSkeleton />;
   }
@@ -120,7 +127,12 @@ export default function NYTLikeHome() {
   };
 
   return (
-    <>
+    <div
+      style={{
+        opacity: contentReady ? 1 : 0,
+        transition: "opacity 0.3s ease-in-out",
+      }}
+    >
       <SmartNewsNavClean />
 
       {/* Prominent Sub-Route Navigation */}
@@ -1191,6 +1203,6 @@ export default function NYTLikeHome() {
           }
         }
       `}</style>
-    </>
+    </div>
   );
 }
