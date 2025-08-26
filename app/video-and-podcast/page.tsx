@@ -220,54 +220,10 @@ const VideoAndPodcast: React.FC = () => {
   }, [filteredAndSortedVideos.length]);
 
   if (loading && videos.length === 0) {
-    return (
-      <div className="min-h-screen bg-white text-black">
-        {/* Main Navigation */}
-        <VideoandpodcastNav />
-
-        <div className="max-w-[1400px] mx-auto px-8 py-16">
-          <main className="w-full">
-            <div className="grid grid-cols-3 gap-12 mb-20">
-              {/* Skeleton Cards */}
-              {Array.from({ length: 9 }).map((_, idx) => (
-                <div
-                  key={idx}
-                  className="bg-gray-50 rounded-md overflow-hidden border border-gray-300 animate-pulse"
-                >
-                  {/* Skeleton Thumbnail */}
-                  <div className="aspect-video bg-gray-200"></div>
-
-                  {/* Skeleton Content */}
-                  <div className="p-6">
-                    {/* Skeleton Title */}
-                    <div className="space-y-2 mb-4">
-                      <div className="h-5 bg-gray-200 rounded w-full"></div>
-                      <div className="h-5 bg-gray-200 rounded w-3/4"></div>
-                    </div>
-
-                    {/* Skeleton Meta */}
-                    <div className="flex items-center space-x-4 mb-4">
-                      <div className="h-3 bg-gray-200 rounded w-20"></div>
-                      <div className="h-3 bg-gray-200 rounded w-16"></div>
-                    </div>
-
-                    {/* Skeleton Description */}
-                    <div className="space-y-2 mb-8">
-                      <div className="h-3 bg-gray-200 rounded w-full"></div>
-                      <div className="h-3 bg-gray-200 rounded w-full"></div>
-                      <div className="h-3 bg-gray-200 rounded w-2/3"></div>
-                    </div>
-
-                    {/* Skeleton Button */}
-                    <div className="h-12 bg-gray-200 rounded-sm w-full"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </main>
-        </div>
-      </div>
-    );
+    const {
+      VideoAndPodcastPageSkeleton,
+    } = require("@/components/SkeletonLoaders");
+    return <VideoAndPodcastPageSkeleton />;
   }
 
   if (error && videos.length === 0) {

@@ -4,18 +4,14 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, Menu } from "lucide-react";
 import { gsap } from "gsap";
 
-import { Playfair_Display, Press_Start_2P } from "next/font/google";
+import { Press_Start_2P } from "next/font/google";
 import Link from "next/link";
 import NewsAndStories from "@/components/NewsAndStories";
 import History from "@/components/History";
 import Navigation from "@/components/Navigation";
 import NavigationTrigger from "@/components/NavigationTrigger";
 import ExploreSheet from "@/components/ExploreSheet";
-
-const playfairDisplay = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
+import SecondHome from "@/components/SecondHome";
 
 const pressStart2P = Press_Start_2P({
   subsets: ["latin"],
@@ -38,7 +34,7 @@ export default function HomePage() {
   const descriptionRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
-  const centerSvgRef = useRef<SVGSVGElement>(null);
+
   const smartRef = useRef<HTMLHeadingElement>(null);
 
   // Sample images for the slideshow (you can replace with your actual image URLs)
@@ -59,6 +55,7 @@ export default function HomePage() {
       // Set initial states to prevent FOUC
       gsap.set(navRef.current, { y: -100, opacity: 0 });
       gsap.set(titleRef.current, { scale: 0.8, opacity: 0 });
+      gsap.set(smartRef.current, { scale: 0.8, opacity: 0 });
       gsap.set(descriptionRef.current, { y: 30, opacity: 0 });
       gsap.set(buttonRef.current, { y: 20, opacity: 0 });
       gsap.set(scrollIndicatorRef.current, { x: 20, opacity: 0 });
@@ -81,6 +78,11 @@ export default function HomePage() {
         duration: 1.2,
         ease: "power3.out",
       })
+        .to(
+          smartRef.current,
+          { scale: 1, opacity: 1, duration: 1.2, ease: "power3.out" },
+          "-=1.0"
+        )
         .to(
           descriptionRef.current,
           { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" },
@@ -311,9 +313,9 @@ export default function HomePage() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-8">
-          <Link href={"/smart-news"}>
+          <Link href={"/#"}>
             <div className="text-white hover:text-gray-300 transition-colors font-medium cursor-pointer">
-              SMART NEWS
+              OFFICAL CAPTAIN SMART WEB
             </div>
           </Link>
           {/* <Link href={"/video-and-podcast"}>
@@ -321,11 +323,11 @@ export default function HomePage() {
               VIDEO & PODCAST
             </div>
           </Link> */}
-          <Link href={"/expose-corner"}>
+          {/* <Link href={"/expose-corner"}>
             <div className="text-white hover:text-gray-300 transition-colors font-medium cursor-pointer">
               EXPOSE CORNER
             </div>
-          </Link>
+          </Link> */}
 
           {/* <Link href={"/store"}>
             <div className="text-white hover:text-gray-300 transition-colors font-medium cursor-pointer">
@@ -524,18 +526,25 @@ export default function HomePage() {
         {/* Slide navigation arrows */}
         <button
           onClick={prevSlide}
-          className="absolute left-2 sm:left-8 top-1/2 transform -translate-y-1/2 z-40 text-white hover:text-gray-300 transition-colors p-2 sm:p-0 hover:scale-110 transition-transform duration-200"
+          className="absolute left-2 sm:left-8 top-1/2 transform -translate-y-1/2 z-40 text-white hover:text-gray-300 p-2 sm:p-0 hover:scale-110 transition-all duration-200"
         >
           <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
         </button>
         <button
           onClick={nextSlide}
-          className="absolute right-2 sm:right-8 top-1/2 transform -translate-y-1/2 z-40 text-white hover:text-gray-300 transition-colors p-2 sm:p-0 hover:scale-110 transition-transform duration-200"
+          className="absolute right-2 sm:right-8 top-1/2 transform -translate-y-1/2 z-40 text-white hover:text-gray-300 p-2 sm:p-0 hover:scale-110 transition-all duration-200"
         >
           <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
         </button>
       </section>
-      <div className="w-full">
+
+      {/* SecondHome Section - Isolated with proper spacing */}
+      <div className="relative z-10">
+        <SecondHome />
+      </div>
+
+      {/* Add spacing before History to prevent interference */}
+      <div className="w-full" style={{ marginTop: "10vh" }}>
         <History />
       </div>
       <div className="w-full">

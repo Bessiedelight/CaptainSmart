@@ -26,93 +26,73 @@ const ExploreSheet: React.FC<ExploreSheetProps> = ({ isOpen, onClose }) => {
       const title = titleRef.current!;
       const items = sheet.querySelectorAll<HTMLAnchorElement>(".explore-item");
 
-      // initial states
-      gsap.set(overlay, { opacity: 0, backdropFilter: "blur(0px)" });
-      gsap.set(sheet, { y: "100%", autoAlpha: 1 });
-      gsap.set(content, {
-        opacity: 0,
-        y: 36,
-        scale: 0.995,
-        willChange: "transform, opacity",
-      });
-      gsap.set(title, {
-        opacity: 0,
-        scale: 0.98,
-        y: 6,
-        willChange: "transform, opacity",
-      });
-      gsap.set(items, {
-        opacity: 0,
-        y: 18,
-        scale: 0.995,
+      // Enable hardware acceleration and optimize for performance
+      gsap.set([sheet, overlay, content, title, ...items], {
+        force3D: true,
         willChange: "transform, opacity",
       });
 
-      // open timeline: smoother, nicer pop + settle
+      // Initial states - simplified for better performance
+      gsap.set(overlay, { opacity: 0 });
+      gsap.set(sheet, { y: "100%", autoAlpha: 1 });
+      gsap.set(content, { opacity: 0, y: 20 });
+      gsap.set(title, { opacity: 0, y: 10 });
+      gsap.set(items, { opacity: 0, y: 15 });
+
+      // Simplified open timeline for better performance
       const tl = gsap.timeline({
-        defaults: { clearProps: "transform,opacity" },
+        defaults: {
+          ease: "power2.out",
+          clearProps: "willChange",
+        },
+        onComplete: () => {
+          // Clean up willChange after animation
+          gsap.set([sheet, overlay, content, title, ...items], {
+            clearProps: "willChange",
+          });
+        },
       });
 
       tl.to(overlay, {
         opacity: 1,
-        backdropFilter: "blur(4px)",
-        duration: 0.35,
-        ease: "power2.out",
+        duration: 0.25,
       })
         .to(
           sheet,
           {
             y: "0%",
-            duration: 0.72,
-            ease: "expo.out",
-            force3D: true,
+            duration: 0.4,
+            ease: "power3.out",
           },
-          "-=0.18"
+          "-=0.1"
         )
-        // content appears slightly after sheet, with a gentle lift
         .to(
           content,
           {
             opacity: 1,
             y: 0,
-            duration: 0.55,
-            ease: "power3.out",
+            duration: 0.3,
           },
-          "-=0.48"
+          "-=0.2"
         )
-        // title pops slightly bigger then settles for a friendly feel
         .to(
           title,
           {
             opacity: 1,
-            scale: 1.03,
             y: 0,
-            duration: 0.36,
-            ease: "back.out(1.6)",
+            duration: 0.25,
           },
-          "-=0.45"
+          "-=0.15"
         )
-        .to(
-          title,
-          {
-            scale: 1,
-            duration: 0.28,
-            ease: "power2.out",
-          },
-          "-=0.1"
-        )
-        // nav items come in with gentle stagger + slight scale
         .to(
           items,
           {
             opacity: 1,
             y: 0,
-            scale: 1,
-            duration: 0.34,
-            stagger: 0.08,
-            ease: "power2.out",
+            duration: 0.2,
+            stagger: 0.05,
           },
-          "-=0.28"
+          "-=0.1"
         );
     }, sheetRef);
 
@@ -130,59 +110,58 @@ const ExploreSheet: React.FC<ExploreSheetProps> = ({ isOpen, onClose }) => {
     const title = titleRef.current!;
     const items = sheet.querySelectorAll<HTMLAnchorElement>(".explore-item");
 
-    // Close timeline: smoother exit with nice scale down + fade
+    // Enable hardware acceleration for close animation
+    gsap.set([sheet, overlay, content, title, ...items], {
+      force3D: true,
+      willChange: "transform, opacity",
+    });
+
+    // Simplified close timeline for better performance
     const tl = gsap.timeline({
       onComplete: onClose,
+      defaults: { ease: "power2.in" },
     });
 
     tl.to(items, {
       opacity: 0,
-      y: 14,
-      scale: 0.995,
-      duration: 0.18,
-      stagger: 0.06,
-      ease: "power2.in",
+      y: 10,
+      duration: 0.15,
+      stagger: 0.03,
     })
       .to(
         title,
         {
           opacity: 0,
-          scale: 0.98,
-          y: 6,
-          duration: 0.2,
-          ease: "power2.in",
+          y: 5,
+          duration: 0.15,
         },
-        "-=0.12"
+        "-=0.1"
       )
       .to(
         content,
         {
           opacity: 0,
-          y: 36,
-          scale: 0.997,
-          duration: 0.26,
-          ease: "power3.in",
+          y: 20,
+          duration: 0.2,
         },
-        "-=0.16"
+        "-=0.1"
       )
       .to(
         sheet,
         {
           y: "100%",
-          duration: 0.6,
-          ease: "expo.in",
+          duration: 0.3,
+          ease: "power3.in",
         },
-        "-=0.2"
+        "-=0.1"
       )
       .to(
         overlay,
         {
           opacity: 0,
-          backdropFilter: "blur(0px)",
-          duration: 0.34,
-          ease: "power2.in",
+          duration: 0.2,
         },
-        "-=0.45"
+        "-=0.2"
       );
   };
 

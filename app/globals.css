@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+/* @import "locomotive-scroll/dist/locomotive-scroll.css"; */
 
 @custom-variant dark (&:is(.dark *));
 
@@ -118,6 +119,13 @@
   }
   body {
     @apply bg-background text-foreground;
+    margin: 0px;
+  }
+
+  /* SecondHome component specific styles */
+  body.second-home {
+    margin: 0px;
+    background-color: black;
   }
 }
 /* Store page custom styles */

@@ -62,39 +62,10 @@ export default function NYTLikeHome() {
     fetchArticles();
   }, []);
 
-  if (loading)
-    return (
-      <div className="loaderWrap">
-        <div className="loader" />
-        <div className="muted">Loading news articles…</div>
-        <style jsx>{`
-          .loaderWrap {
-            min-height: 60vh;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            align-items: center;
-            justify-content: center;
-          }
-          .loader {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: 3px solid #eee;
-            border-top-color: #333;
-            animation: spin 1s linear infinite;
-          }
-          .muted {
-            color: #777;
-          }
-          @keyframes spin {
-            to {
-              transform: rotate(360deg);
-            }
-          }
-        `}</style>
-      </div>
-    );
+  if (loading) {
+    const { SmartNewsPageSkeleton } = require("@/components/SkeletonLoaders");
+    return <SmartNewsPageSkeleton />;
+  }
 
   if (error || articles.length === 0)
     return (

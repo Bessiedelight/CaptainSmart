@@ -1,7 +1,7 @@
 {
-  "buildCommand": "pnpm run build",
-  "devCommand": "pnpm run dev",
-  "installCommand": "pnpm install",
+  "buildCommand": "pnpm build",
+  "devCommand": "pnpm dev",
+  "installCommand": "pnpm install --frozen-lockfile",
   "framework": "nextjs",
   "functions": {
     "app/api/**/*.ts": {
@@ -11,13 +11,16 @@
   "env": {
     "GEMINI_API_KEY": "dummy_key_for_build",
     "ELEVENLABS_API_KEY": "dummy_key_for_build",
-    "SCRAPING_API_KEY": "dummy_key_for_build"
+    "SCRAPING_API_KEY": "dummy_key_for_build",
+    "NODE_ENV": "production"
   },
   "build": {
     "env": {
       "GEMINI_API_KEY": "dummy_key_for_build",
       "ELEVENLABS_API_KEY": "dummy_key_for_build",
-      "SCRAPING_API_KEY": "dummy_key_for_build"
+      "SCRAPING_API_KEY": "dummy_key_for_build",
+      "NODE_ENV": "production"
     }
-  }
+  },
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD ./"
 }

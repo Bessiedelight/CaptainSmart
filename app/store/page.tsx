@@ -69,6 +69,13 @@ export default function StorePage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Simulate loading for demonstration
+  React.useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -94,6 +101,11 @@ export default function StorePage() {
       selectedCategory === "All" || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  if (loading) {
+    const { StorePageSkeleton } = require("@/components/SkeletonLoaders");
+    return <StorePageSkeleton />;
+  }
 
   return (
     <div className="min-h-screen bg-white">

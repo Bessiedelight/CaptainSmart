@@ -11,21 +11,12 @@ const nextConfig: NextConfig = {
   },
   // Skip trailing slash redirects
   skipTrailingSlashRedirect: true,
-  // Ignore build warnings
-  onDemandEntries: {
-    maxInactiveAge: 25 * 1000,
-    pagesBufferLength: 2,
-  },
   // Disable strict mode for more lenient builds
   reactStrictMode: false,
-  // Disable SWC minification if it causes issues
-  swcMinify: true,
-  // Ignore build-time errors
+  // Turbopack compatible experimental options
   experimental: {
-    // Disable build-time optimizations that might cause errors
+    // Remove incompatible options for Turbopack
     optimizeCss: false,
-    // Allow build to continue with errors
-    fallbackNodePolyfills: false,
   },
   images: {
     remotePatterns: [
